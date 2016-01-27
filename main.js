@@ -119,7 +119,7 @@ function route() {
         };
         var klasse = $('#klasse').val();
         var transport = $('#transport').val();
-        $.ajax('/'+transport+'/'+klasse+'/', {
+        $.ajax(transport+'/'+klasse+'/', {
             data: JSON.stringify(data),
             contentType: 'application/json',
             type: 'POST'
