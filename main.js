@@ -1,15 +1,16 @@
 var crs = new L.Proj.CRS.TMS('EPSG:25832',
     '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs', [120000, 5900000, 1000000, 6500000], {
-        resolutions: [1638.4, 819.2, 409.6, 204.8, 102.4, 51.2, 25.6, 12.8, 6.4, 3.2, 1.6, 0.8, 0.4, 0.2, 0.1]
+        resolutions: [1638.4, 819.2, 409.6, 204.8, 102.4, 51.2, 25.6, 12.8, 6.4, 3.2, 1.6, 0.8, 0.4, 0.2]
     });
 var map = new L.Map('map', {
-    crs: crs
+    crs: crs,
+    maxZoom: 13
 });
 
 var ortofoto = L.tileLayer('http://{s}.services.kortforsyningen.dk/orto_foraar?login=qgisdk&password=qgisdk&request=GetTile&version=1.0.0&service=WMTS&Layer=orto_foraar&style=default&format=image/jpeg&TileMatrixSet=View1&TileMatrix={zoom}&TileRow={y}&TileCol={x}', {
     attribution: 'Geodatastyrelsen',
     continuousWorld: true,
-    maxZoom: 14,
+   
     zoom: function () {
         var zoom = map.getZoom();
         if (zoom < 10)
@@ -22,7 +23,7 @@ var ortofoto = L.tileLayer('http://{s}.services.kortforsyningen.dk/orto_foraar?l
 var skaermkort = L.tileLayer('http://{s}.services.kortforsyningen.dk/topo_skaermkort_daempet?login=qgisdk&password=qgisdk&request=GetTile&version=1.0.0&service=WMTS&Layer=dtk_skaermkort_daempet&style=default&format=image/jpeg&TileMatrixSet=View1&TileMatrix={zoom}&TileRow={y}&TileCol={x}', {
     attribution: 'Geodatastyrelsen',
     continuousWorld: true,
-    maxZoom: 14,
+   
     zoom: function () {
         var zoom = map.getZoom();
         if (zoom < 10)
@@ -104,32 +105,37 @@ function decode(encoded, precision) {
 }
 function distance(input) {
     if (input >= 1000) {
-        return (input/1000).toFixed(2) + ' km';
+        return (input / 1000).toFixed(2) + ' km';
     } else {
         return input + ' m';
     }
 }
 function route() {
     if (selectedSkole && selectedAdresse) {
-        var data = {
-            coordinates: [
+        var data = {};
+        if ($('#retning').val() === "0") {
+            data.coordinates = [
+                [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng],
+                [selectedSkole._latlng.lat, selectedSkole._latlng.lng]
+            ];
+        } else {
+            data.coordinates = [
                 [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
                 [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
-            ]
-        };
+            ];
+        }
         var klasse = $('#klasse').val();
         var transport = $('#transport').val();
-        $.ajax(transport+'/'+klasse+'/', {
+        $.ajax(transport + '/' + klasse + '/', {
             data: JSON.stringify(data),
             contentType: 'application/json',
             type: 'POST'
         }).done(function (data) {
-            console.log(data);
-            var latlngs = decode(data.route_geometry,6);
+            var latlngs = decode(data.route_geometry, 6);
             if (selectedRoute) {
                 map.removeLayer(selectedRoute);
             }
-            selectedRoute = L.polyline(latlngs, {color: 'red'}).addTo(map);
+            selectedRoute = L.polyline(latlngs, { color: 'red' }).addTo(map);
             $('#afstand').text(distance(data.route_summary.total_distance));
             $('#tid').text(data.route_summary.total_time.toHHMMSS());
         });
@@ -148,6 +154,9 @@ $('#klasse').on('change', function () {
     route();
 });
 $('#transport').on('change', function () {
+    route();
+});
+$('#retning').on('change', function () {
     route();
 });
 
@@ -173,7 +182,7 @@ var baselayers = {
 };
 
 var overlays = {
-   // "Skoler": skoler
+    // "Skoler": skoler
 };
 
 L.control.layers(baselayers, overlays).addTo(map);
@@ -195,11 +204,19 @@ $('#adresse-autocomplete').dawaautocomplete({
             if (selectedAdresse) {
                 map.removeLayer(selectedAdresse);
             }
-            selectedAdresse = L.marker([punkt.adgangspunkt.koordinater[1], punkt.adgangspunkt.koordinater[0]], { icon: iconHome, draggable:true }).addTo(map);
+            selectedAdresse = L.marker([punkt.adgangspunkt.koordinater[1], punkt.adgangspunkt.koordinater[0]], { icon: iconHome, draggable: true }).addTo(map);
             selectedAdresse.bindPopup(data.tekst);
             selectedAdresse.openPopup();
-            selectedAdresse.on('drag',function(e){
+            selectedAdresse.on('drag', function (e) {
                 route();
+            })
+            selectedAdresse.on('dragend', function (e) {
+                $.get('http://dawa.aws.dk/adgangsadresser/reverse?x=' + e.target._latlng.lng + '&y=' + e.target._latlng.lat + '&srid=4326', function (r) {
+                    var popup = e.target.getPopup();
+                    popup.setContent(r.vejstykke.navn+' '+r.husnr+', '+r.postnummer.nr+' '+r.postnummer.navn);
+                    e.target.openPopup();
+                })
+
             })
             route();
         });
