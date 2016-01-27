@@ -1,0 +1,15 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, #map, .left {
+    height: 100%;
+}
+#map {
+    margin-left: 300px;
+}
+.left {
+    padding: 20px;
+    float:left;
+}
