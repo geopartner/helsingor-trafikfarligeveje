@@ -1,5 +1,5 @@
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var app = express();
 app.use(express.static(__dirname)); //  "public" off of current is root
 app.use(bodyParser.json())
@@ -31,5 +31,6 @@ app.post('/:transport/:age', function (req, res) {
         res.json(result);
     });
 });
+
 app.listen(5000);
 console.log('Listening on port 5000');
