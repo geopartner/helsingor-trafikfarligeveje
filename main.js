@@ -7,7 +7,7 @@ var map = new L.Map('map', {
     maxZoom: 13
 });
 
-var ortofoto = L.tileLayer('http://{s}.services.kortforsyningen.dk/orto_foraar?login=qgisdk&password=qgisdk&request=GetTile&version=1.0.0&service=WMTS&Layer=orto_foraar&style=default&format=image/jpeg&TileMatrixSet=View1&TileMatrix={zoom}&TileRow={y}&TileCol={x}', {
+var ortofoto = L.tileLayer('//{s}.services.kortforsyningen.dk/orto_foraar?login=qgisdk&password=qgisdk&request=GetTile&version=1.0.0&service=WMTS&Layer=orto_foraar&style=default&format=image/jpeg&TileMatrixSet=View1&TileMatrix={zoom}&TileRow={y}&TileCol={x}', {
     attribution: 'Geodatastyrelsen',
     continuousWorld: true,
 
@@ -20,7 +20,7 @@ var ortofoto = L.tileLayer('http://{s}.services.kortforsyningen.dk/orto_foraar?l
     }
 });
 
-var skaermkort = L.tileLayer('http://{s}.services.kortforsyningen.dk/topo_skaermkort_daempet?login=qgisdk&password=qgisdk&request=GetTile&version=1.0.0&service=WMTS&Layer=dtk_skaermkort_daempet&style=default&format=image/jpeg&TileMatrixSet=View1&TileMatrix={zoom}&TileRow={y}&TileCol={x}', {
+var skaermkort = L.tileLayer('//{s}.services.kortforsyningen.dk/topo_skaermkort_daempet?login=qgisdk&password=qgisdk&request=GetTile&version=1.0.0&service=WMTS&Layer=dtk_skaermkort_daempet&style=default&format=image/jpeg&TileMatrixSet=View1&TileMatrix={zoom}&TileRow={y}&TileCol={x}', {
     attribution: 'Geodatastyrelsen',
     continuousWorld: true,
 
@@ -182,7 +182,7 @@ function setAdresse(latlng, tekst) {
         route();
     });
     selectedAdresse.on('dragend', function (e) {
-        $.get('http://dawa.aws.dk/adgangsadresser/reverse?x=' + e.target._latlng.lng + '&y=' + e.target._latlng.lat + '&srid=4326', function (r) {
+        $.get('//dawa.aws.dk/adgangsadresser/reverse?x=' + e.target._latlng.lng + '&y=' + e.target._latlng.lat + '&srid=4326', function (r) {
             var popup = e.target.getPopup();
             popup.setContent(r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn);
             e.target.openPopup();
@@ -219,7 +219,7 @@ if (hash.length > 3)
 if (hash.length > 4)
     $('#retning').val(hash[4]);
 if (hash.length > 6 && hash[5] !== '' && hash[6] !== '') {
-    $.get('http://dawa.aws.dk/adgangsadresser/reverse?x=' + hash[5] + '&y=' + hash[6] + '&srid=4326', function (r) {
+    $.get('//dawa.aws.dk/adgangsadresser/reverse?x=' + hash[5] + '&y=' + hash[6] + '&srid=4326', function (r) {
         setAdresse([hash[6], hash[5]], r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn);
     })
 }
