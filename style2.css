@@ -8,8 +8,8 @@ html, body {
     width: 100%;
 }
 #map {
-    height: 278mm;
-    width: 200mm;
+    height: 500px;
+    width: 500px;
 }
 .left {
     padding: 20px;
