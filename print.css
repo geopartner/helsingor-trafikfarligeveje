@@ -8,15 +8,15 @@ html, body, #map, .left {
 }
 #map {
     height: 15cm;
-    position:absolute;
-    top:0;
+    position: absolute;
+    top: 0;
 }
 .left {
     padding: 5mm;
-    width:100%;
-position:absolute;
-top:15cm;
-height:10cm;
+    width: 100%;
+    position: absolute;
+    top: 15cm;
+    height: 10cm;
 }
 h1{
     display:none;
