@@ -8,6 +8,7 @@ html, body {
     width: 100%;
 }
 #map {
+    padding:5mm;
     height: 278mm;
     width: 100%;
 }
