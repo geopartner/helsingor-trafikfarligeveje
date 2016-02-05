@@ -1,0 +1,32 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, #map, .left {
+    height: 100%;
+}
+#map {
+    height: 15cm;
+    position:absolute;
+    top:0;
+}
+.left {
+    padding: 5mm;
+    width:100%;
+position:absolute;
+top:15cm;
+height:10cm;
+}
+h1{
+    display:none;
+}
+#tilskudbtn {
+    display: none;
+}
+.leaflet-control {
+    display: none;
+}
+.leaflet-popup-pane {
+    display: none;
+}

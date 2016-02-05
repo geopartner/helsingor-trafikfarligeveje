@@ -13,4 +13,5 @@ html, body, #map, .left {
     padding: 20px;
     float:left;
     overflow: scroll;
+    width: 300px;
 }

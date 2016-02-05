@@ -19,6 +19,8 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
-    "osrm": "^4.9.1"
+    "osrm": "^4.9.1",
+    "phantom": "^0.8.4",
+    "uuid": "^2.0.1"
   }
 }

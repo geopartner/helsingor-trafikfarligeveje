@@ -32,6 +32,7 @@ var skaermkort = L.tileLayer('//{s}.services.kortforsyningen.dk/topo_skaermkort_
             return 'L' + zoom;
     }
 }).addTo(map);
+
 var klasseIndex = {
     '0-3': {
         route: '0-3',
@@ -130,7 +131,7 @@ function distance(input) {
     }
 }
 
-function route() {
+function route(zoom) {
     setQuery();
     $('#tilskudyes').hide();
     $('#tilskudno').hide();
@@ -150,7 +151,7 @@ function route() {
         }
         var klasse = $('#klasse').val();
         var transport = $('#transport').val();
-        $.ajax(transport + '/' + klasseIndex[klasse].route + '/', {
+        $.ajax('route/' + transport + '/' + klasseIndex[klasse].route + '/', {
             data: JSON.stringify(data),
             contentType: 'application/json',
             type: 'POST'
@@ -159,6 +160,8 @@ function route() {
             if (selectedRoute) {
                 map.removeLayer(selectedRoute);
             }
+
+
             selectedRoute = L.polyline(latlngs, { color: 'red' }).addTo(map);
             $('#afstand').text(distance(data.route_summary.total_distance));
             $('#tid').text(data.route_summary.total_time.toHHMMSS());
@@ -167,6 +170,9 @@ function route() {
                 $('#tilskudbtn').show();
             } else {
                 $('#tilskudno').show();
+            }
+            if (zoom) {
+                map.fitBounds(selectedRoute.getBounds());
             }
         });
     }
@@ -185,10 +191,11 @@ function setAdresse(latlng, tekst) {
         $.get('//dawa.aws.dk/adgangsadresser/reverse?x=' + e.target._latlng.lng + '&y=' + e.target._latlng.lat + '&srid=4326', function (r) {
             var popup = e.target.getPopup();
             popup.setContent(r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn);
+            $('#adresse-autocomplete').val(r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn)
             e.target.openPopup();
         })
     });
-    route();
+
 }
 function setQuery() {
     var skole = $('#skoler').val();
@@ -201,7 +208,7 @@ function setQuery() {
         lat = selectedAdresse._latlng.lat;
         lng = selectedAdresse._latlng.lng;
     }
-    var hash = "#/" + [
+    var hash = "/" + [
         skole,
         $('#klasse').val(),
         $('#transport').val(),
@@ -209,7 +216,8 @@ function setQuery() {
         lng,
         lat
     ].join("/");
-    location.replace(hash);
+    location.replace('#' + hash);
+    $("#tilskudbtn").attr("href", "pdf" + hash);
 }
 var hash = location.hash.split('/');
 if (hash.length > 2)
@@ -221,6 +229,8 @@ if (hash.length > 4)
 if (hash.length > 6 && hash[5] !== '' && hash[6] !== '') {
     $.get('//dawa.aws.dk/adgangsadresser/reverse?x=' + hash[5] + '&y=' + hash[6] + '&srid=4326', function (r) {
         setAdresse([hash[6], hash[5]], r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn);
+        $('#adresse-autocomplete').val(r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn)
+        route(true);
     })
 }
 
@@ -291,6 +301,7 @@ $('#adresse-autocomplete').dawaautocomplete({
         $.get(data.data.href, function (punkt) {
             var latlng = [punkt.adgangspunkt.koordinater[1], punkt.adgangspunkt.koordinater[0]];
             setAdresse(latlng, data.tekst);
+            route();
         });
     },
     error: function (xhr, status, error) {

@@ -4,21 +4,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Trafikfarlige skoleveje</title>
+    <title>Ansøgning om kørselstilskud</title>
     
     <link rel="stylesheet" href="bower_components/jquery-ui/themes/start/jquery-ui.css">
     <link rel="stylesheet" href="bower_components/jquery-ui/themes/start/theme.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" media="screen">
+    <link rel="stylesheet" href="print.css" media="print">
 </head>
 
 
 <body>
     <div class="left bg-primary">
         
-        <h1>Trafikfarlige skoleveje</h1>
         <div class="form-group">
             <label for="adresse-autocomplete">Indtast din adresse</label>
             <input type="text" class="form-control" id="adresse-autocomplete" placeholder="vejnavn, husnr, postnr">
@@ -65,7 +65,7 @@
         <div id="tilskudno" class="alert alert-danger" role="alert" style="display: none;">
             <strong>Du er ikke berettiget til at søge tilskud!</strong>
         </div>
-        <button id="tilskudbtn" class="btn btn-success btn-lg center-block" type="button" style="display: none;">Søg tilskud</button>
+        <a id="tilskudbtn" class="btn btn-success btn-lg center-block" style="display: none;" target="_blank">Søg tilskud</a>
     </div>
     <div id="map"></div>
     <script src="bower_components/jquery/dist/jquery.js"></script>

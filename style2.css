@@ -1,0 +1,28 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+#map {
+    height: 220mm;
+    width: 100%;
+}
+.left {
+    padding: 20px;
+}
+.leaflet-control {
+    display: none;
+}
+.leaflet-popup-pane {
+    display: none;
+}
+h1 {
+    font-size: 14pt;
+}
+a[href]:after {
+    content: none !important;
+  }
