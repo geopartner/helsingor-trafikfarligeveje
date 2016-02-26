@@ -298,7 +298,7 @@ $('#adresse-autocomplete').dawaautocomplete({
         kommunekode: '0217'
     },
     select: function (event, data) {
-        $.get(data.data.href, function (punkt) {
+        $.get('//dawa.aws.dk/adgangsadresser/' + data.data.id, function (punkt) {
             var latlng = [punkt.adgangspunkt.koordinater[1], punkt.adgangspunkt.koordinater[0]];
             setAdresse(latlng, data.tekst);
             route();
