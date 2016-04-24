@@ -9,7 +9,7 @@ ACCESS_PROFILE_URL:=$(OSRM_RELEASE)/profiles/lib/access.lua
 MAXSPEED_PROFILE_URL:=$(OSRM_RELEASE)/profiles/lib/maxspeed.lua
 OSRM_EXTRACT:=$(TOOL_ROOT)/osrm-extract
 OSRM_PREPARE:=$(TOOL_ROOT)/osrm-prepare
-OGR2OSM:=/Users/runetvilum/GitHub/ogr2osm/
+OGR2OSM:=../ogr2osm/
 
 
 lib: clean
