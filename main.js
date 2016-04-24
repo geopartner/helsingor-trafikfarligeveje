@@ -291,8 +291,8 @@ function setAdresse(latlng, tekst) {
     if (selectedAdresse) {
         map.removeLayer(selectedAdresse);
     }
-    selectedAdresse = L.marker(latlng, { icon: iconHome, draggable: true }).addTo(map);
-    //selectedAdresse = L.marker(latlng, { icon: iconHome }).addTo(map);
+    //selectedAdresse = L.marker(latlng, { icon: iconHome, draggable: true }).addTo(map);
+    selectedAdresse = L.marker(latlng, { icon: iconHome }).addTo(map);
     selectedAdresse.bindPopup(tekst);
     selectedAdresse.openPopup();
     selectedAdresse.on('drag', function (e) {
