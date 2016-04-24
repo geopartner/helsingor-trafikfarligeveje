@@ -50,6 +50,12 @@
         <div id="tilskudno" class="alert alert-danger" role="alert" style="display: none;">
             <strong>Du er ikke berettiget til at søge tilskud!</strong>
         </div>
+        <div id="egetdistrikt" class="alert alert-danger" role="alert" style="display: none;">
+            <strong>Du skal vælge en skole i dit eget skoledistrikt for eventuelt at kunne søge tilskud!</strong>
+        </div>
+        <div id="farlig" class="alert alert-success" role="alert" style="display: none;">
+            <strong>Du er berettiget til at søge tilskud, da du bor ud til en trafikfarlig vej!</strong>
+        </div> 
         <div class="form-group">
             <a class="form-control-static" id="url"></a>
         </div>  
@@ -59,6 +65,7 @@
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/proj4/dist/proj4.js"></script>
     <script src="bower_components/Proj4Leaflet/src/proj4leaflet.js"></script>
+    <script src="turf_inside.min.js"></script>
     <script src="print.js"></script>
    
 </body>

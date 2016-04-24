@@ -8,20 +8,23 @@ app.use(express.static(__dirname)); //  "public" off of current is root
 app.use(bodyParser.json())
 var OSRM = require('osrm')
 var transport = {
-    bycycle: {
-        "0-3": new OSRM("bycycle/Skolevej_0-3.osrm"),
-        "4-6": new OSRM("bycycle/Skolevej_4-6.osrm"),
-        "7-10": new OSRM("bycycle/Skolevej_7-10.osrm")
+    bicycle: {
+        "0-3": new OSRM("bicycle/Skolevej_0-3.osrm"),
+        "4-6": new OSRM("bicycle/Skolevej_4-6.osrm"),
+        "7-10": new OSRM("bicycle/Skolevej_7-10.osrm"),
+        "all": new OSRM("bicycle/Vejmidte.osrm")
     },
     car: {
         "0-3": new OSRM("car/Skolevej_0-3.osrm"),
         "4-6": new OSRM("car/Skolevej_4-6.osrm"),
-        "7-10": new OSRM("car/Skolevej_7-10.osrm")
+        "7-10": new OSRM("car/Skolevej_7-10.osrm"),
+        "all": new OSRM("car/Vejmidte.osrm")
     },
     foot: {
         "0-3": new OSRM("foot/Skolevej_0-3.osrm"),
         "4-6": new OSRM("foot/Skolevej_4-6.osrm"),
-        "7-10": new OSRM("foot/Skolevej_7-10.osrm")
+        "7-10": new OSRM("foot/Skolevej_7-10.osrm"),
+        "all": new OSRM("foot/Vejmidte.osrm")
     }
 };
 phantom.create({
@@ -81,6 +84,7 @@ phantom.create({
 });
 app.post('/route/:transport/:age', function (req, res) {    
     //var query = { coordinates: [[56.07569, 12.44687], [56.09377, 12.46238]] };
+    req.body.printInstructions = true;
     transport[req.params.transport][req.params.age].route(req.body, function (err, result) {
         if (err) {
             return res.sendStatus(500);

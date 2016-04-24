@@ -21,6 +21,7 @@
     "bootstrap": "~3.3.6",
     "leaflet": "~0.7.7",
     "Proj4Leaflet": "proj4leaflet#~0.7.2",
-    "Leaflet.MakiMarkers": "~1.0.1"
+    "Leaflet.MakiMarkers": "~1.0.1",
+    "turf": "^2.0.2"
   }
 }

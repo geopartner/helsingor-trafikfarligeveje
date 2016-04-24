@@ -41,8 +41,8 @@
         <div class="form-group">
             <label for="transport">Transport</label>
             <select class="form-control" id="transport">
-                <option value="car">Bil</option>
-                <option value="bycycle" selected>Cykel</option>
+                <!--option value="car">Bil</option-->
+                <option value="bicycle" selected>Cykel</option>
                 <option value="foot">Til fods</option>
             </select>
         </div>
@@ -65,6 +65,13 @@
         <div id="tilskudno" class="alert alert-danger" role="alert" style="display: none;">
             <strong>Du er ikke berettiget til at søge tilskud!</strong>
         </div>
+        <div id="egetdistrikt" class="alert alert-danger" role="alert" style="display: none;">
+            <strong>Du skal vælge en skole i dit eget skoledistrikt for eventuelt at kunne søge tilskud!</strong>
+        </div>
+        <div id="farlig" class="alert alert-success" role="alert" style="display: none;">
+            <strong>Du er berettiget til at søge tilskud, da du bor ud til en trafikfarlig vej!</strong>
+        </div> 
+        
         <a id="tilskudbtn" class="btn btn-success btn-lg center-block" style="display: none;" target="_blank">Søg tilskud</a>
     </div>
     <div id="map"></div>
@@ -76,6 +83,7 @@
     <script src="bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
     <script src="bower_components/proj4/dist/proj4.js"></script>
     <script src="bower_components/Proj4Leaflet/src/proj4leaflet.js"></script>
+    <script src="turf_inside.min.js"></script>
     <script src="main.js"></script>
    
 </body>

@@ -32,6 +32,10 @@ var skaermkort = L.tileLayer('//{s}.services.kortforsyningen.dk/topo_skaermkort_
             return 'L' + zoom;
     }
 }).addTo(map);
+var skoledistrikter = L.geoJson(null);
+$.getJSON('skoledistrikter.geojson', function (data) {
+    skoledistrikter.addData(data);
+});
 
 var klasseIndex = {
     '0-3': {
@@ -125,54 +129,160 @@ function decode(encoded, precision) {
 }
 function distance(input) {
     if (input >= 1000) {
-        return (input / 1000).toFixed(2) + ' km';
+        return (input / 1000).toFixed(3) + ' km';
     } else {
         return input + ' m';
     }
 }
-
-function route(zoom) {
+function showRoute(options) {
     setQuery();
+    var latlngs = decode(options.data.route_geometry, 6);
+    if (selectedRoute) {
+        map.removeLayer(selectedRoute);
+    }
+    selectedRoute = L.polyline(latlngs, { color: 'red' }).addTo(map);
+    $('#afstand').text(distance(options.data.route_summary.total_distance));
+    $('#tid').text(options.data.route_summary.total_time.toHHMMSS());
+
+    var pointAdresse = selectedAdresse.toGeoJSON();
+    var pointSkole = selectedSkole.toGeoJSON();
+    var layers = skoledistrikter.getLayers();
+    var testDistrik = false;
+    for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i].toGeoJSON();
+        if (turf.inside(pointAdresse, layer)) {
+            if (turf.inside(pointSkole, layer)) {
+                testDistrik = true;
+            }
+            break;
+        }
+    }
+    if (!testDistrik) {
+        $('#egetdistrikt').show();
+    } else if (options.farlig) {
+        $('#farlig').show();
+        $('#tilskudbtn').show();
+    } else if (options.data.route_summary.total_distance > klasseIndex[options.klasse].max) {
+        $('#tilskudyes').show();
+        $('#tilskudbtn').show();
+    } else {
+        $('#tilskudno').show();
+    }
+    if (options.zoom) {
+        map.fitBounds(selectedRoute.getBounds());
+    }
+}
+function route(options) {
+    options = options || {};
+    options.farlig = false;
+    $('#farlig').hide();
+    $('#egetdistrikt').hide();
     $('#tilskudyes').hide();
     $('#tilskudno').hide();
     $('#tilskudbtn').hide();
     if (selectedSkole && selectedAdresse) {
         var data = {};
-        if ($('#retning').val() === "0") {
-            data.coordinates = [
-                [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng],
-                [selectedSkole._latlng.lat, selectedSkole._latlng.lng]
-            ];
-        } else {
-            data.coordinates = [
-                [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
-                [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
-            ];
-        }
-        var klasse = $('#klasse').val();
+        options.klasse = $('#klasse').val();
         var transport = $('#transport').val();
-        $.ajax('route/' + transport + '/' + klasseIndex[klasse].route + '/', {
+        data.coordinates = [
+            [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng],
+            [selectedSkole._latlng.lat, selectedSkole._latlng.lng]
+        ];
+
+        $.ajax('route/' + transport + '/all', {
             data: JSON.stringify(data),
             contentType: 'application/json',
             type: 'POST'
-        }).done(function (data) {
-            var latlngs = decode(data.route_geometry, 6);
-            if (selectedRoute) {
-                map.removeLayer(selectedRoute);
+        }).done(function (all1) {
+            if (all1.route_instructions.length > 0) {
+                var route = all1.route_instructions[0];
+                var farlig = route[1].split('-');
+                if (farlig.length === 2) {
+                    if (farlig[0] === 'T') {
+                        if (options.klasse === '0-3' ||
+                            (options.klasse === '4-6' && (farlig[1] === '6' || farlig[1] === '60' || farlig[1] === '10')) ||
+                            (options.klasse === '7-10' && farlig[1] === '10')) {
+                            options.farlig = true;
+                        }
+                    }
+                }
             }
-
-
-            selectedRoute = L.polyline(latlngs, { color: 'red' }).addTo(map);
-            $('#afstand').text(distance(data.route_summary.total_distance));
-            $('#tid').text(data.route_summary.total_time.toHHMMSS());
-            if (data.route_summary.total_distance > klasseIndex[klasse].max) {
-                $('#tilskudyes').show();
-                $('#tilskudbtn').show();
+            if (options.farlig) {
+                data.coordinates = [
+                    [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
+                    [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
+                ];
+                if (options.retning) {
+                    if (options.retning === '1') {
+                        $.ajax('route/' + transport + '/all', {
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            type: 'POST'
+                        }).done(function (all2) {
+                            options.data = all2;
+                            showRoute(options);
+                        });
+                    } else {
+                        options.data = all1;
+                        showRoute(options);
+                    }
+                } else {
+                    $.ajax('route/' + transport + '/all', {
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        type: 'POST'
+                    }).done(function (all2) {
+                        if (all1.route_summary.total_distance > all2.route_summary.total_distance) {
+                            $('#retning').val("0");
+                            options.data = all1;
+                        } else {
+                            $('#retning').val("1");
+                            options.data = all2;
+                        }
+                        showRoute(options);
+                    });
+                }
             } else {
-                $('#tilskudno').show();
-            }
-            if (zoom) {
-                map.fitBounds(selectedRoute.getBounds());
+                $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    type: 'POST'
+                }).done(function (res1) {
+                    data.coordinates = [
+                        [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
+                        [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
+                    ];
+                    if (options.retning) {
+                        if (options.retning === '1') {
+                            $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
+                                data: JSON.stringify(data),
+                                contentType: 'application/json',
+                                type: 'POST'
+                            }).done(function (res2) {
+                                options.data = res2;
+                                showRoute(options);
+                            });
+                        } else {
+                            options.data = res1;
+                            showRoute(options);
+                        }
+                    } else {
+                        $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            type: 'POST'
+                        }).done(function (res2) {
+                            if (res1.route_summary.total_distance > res2.route_summary.total_distance) {
+                                $('#retning').val("0");
+                                options.data = res1;
+                            } else {
+                                $('#retning').val("1");
+                                options.data = res2;
+                            }
+                            showRoute(options);
+                        });
+                    }
+                });
             }
         });
     }
@@ -182,6 +292,7 @@ function setAdresse(latlng, tekst) {
         map.removeLayer(selectedAdresse);
     }
     selectedAdresse = L.marker(latlng, { icon: iconHome, draggable: true }).addTo(map);
+    //selectedAdresse = L.marker(latlng, { icon: iconHome }).addTo(map);
     selectedAdresse.bindPopup(tekst);
     selectedAdresse.openPopup();
     selectedAdresse.on('drag', function (e) {
@@ -230,7 +341,7 @@ if (hash.length > 6 && hash[5] !== '' && hash[6] !== '') {
     $.get('//dawa.aws.dk/adgangsadresser/reverse?x=' + hash[5] + '&y=' + hash[6] + '&srid=4326', function (r) {
         setAdresse([hash[6], hash[5]], r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn);
         $('#adresse-autocomplete').val(r.vejstykke.navn + ' ' + r.husnr + ', ' + r.postnummer.nr + ' ' + r.postnummer.navn)
-        route(true);
+        route({ zoom: true });
     })
 }
 
@@ -251,7 +362,7 @@ $('#transport').on('change', function () {
     route();
 });
 $('#retning').on('change', function () {
-    route();
+    route({ retning: $('#retning').val() });
 });
 
 var skoler = L.geoJson(null, {
@@ -281,6 +392,7 @@ var baselayers = {
 
 var overlays = {
     // "Skoler": skoler
+    "Skoledistrikter": skoledistrikter
 };
 
 L.control.layers(baselayers, overlays).addTo(map);
