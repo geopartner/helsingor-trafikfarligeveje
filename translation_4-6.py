@@ -8,7 +8,7 @@ def filterFeature(ogrfeature, fieldNames, reproject):
 
     index = ogrfeature.GetFieldIndex('traf_kl')
     if index >= 0:
-        if ogrfeature.GetField(index) in ('6', '60', '10'):
+        if ogrfeature.GetField(index) in ('6', '60', '10', 6, 60, 10):
             return None
     return ogrfeature
     

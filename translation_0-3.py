@@ -6,9 +6,9 @@ A translation function for TIGER 2012 counties
 def filterFeature(ogrfeature, fieldNames, reproject):
     if not ogrfeature: return
 
-    index = ogrfeature.GetFieldIndex('traf_kl')
+    index = ogrfeature.GetFieldIndex('traf_kl')    
     if index >= 0:
-        if ogrfeature.GetField(index) in ('3', '6', '60', '10'):
+        if ogrfeature.GetField(index) in ('3', '6', '60', '10', 3, 6, 60, 10):
             return None
     return ogrfeature
     
