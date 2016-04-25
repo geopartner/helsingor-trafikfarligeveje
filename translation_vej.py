@@ -4,6 +4,7 @@
 A translation function for TIGER 2012 counties
 '''
 
+
 def filterTags(attrs):
     if not attrs:
         return
