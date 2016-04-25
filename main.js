@@ -420,3 +420,15 @@ $('#adresse-autocomplete').dawaautocomplete({
         alert('Der opstod en fejl: ' + status + " - " + error);
     }
 });
+$("#tilskudbtn").click(
+    function(e) {   
+        e.preventDefault();
+
+        //open download link in new page
+        window.open( $(this).attr("href") );
+
+        //redirect current page to success page
+        window.location="https://link.oib.dk/kommune.asp?kommunekode=217&blanketid=1205";
+        window.focus();
+    }
+);

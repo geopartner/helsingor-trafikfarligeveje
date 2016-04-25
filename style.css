@@ -15,3 +15,6 @@ html, body, #map, .left {
     overflow-y: auto;
     width: 300px;
 }
+.btn {
+    white-space: normal;
+}
