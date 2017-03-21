@@ -38,7 +38,7 @@ def filterTags(attrs):
         tags['highway'] = 'cycleway'
     if klasse == u'Cykelbane langs vej':
         tags['highway'] = 'cycleway'
-#    if attrs['ensrettet'] == u'1':
-#        tags['oneway'] = 'yes'
+    if attrs['ensrettet'] == u'1':
+        tags['oneway'] = 'yes'
 
     return tags

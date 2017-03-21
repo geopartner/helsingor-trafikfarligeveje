@@ -5,12 +5,12 @@ A translation function for TIGER 2012 counties
 '''
 def filterFeature(ogrfeature, fieldNames, reproject):
     if not ogrfeature: return
-
-    index = ogrfeature.GetFieldIndex('traf_kl')    
+    index = ogrfeature.GetFieldIndex('skolevej')
     if index >= 0:
-        if ogrfeature.GetField(index) in ('3', '6', '60', '10', 3, 6, 60, 10):
-            return None
-    return ogrfeature
+        if ogrfeature.GetField(index) == u'J':
+            return ogrfeature
+    return None
+    
     
 def filterTags(attrs):
     if not attrs:
@@ -22,7 +22,7 @@ def filterTags(attrs):
     print type(attrs['vejklasse_'])
     '''
     tags['name'] = attrs['skolevej']+'-'+attrs['traf_kl']
-    klasse = attrs['Vejklasse_']
+    klasse = attrs['vejklasse_']
     if klasse == u'Lokalvej-Primær':
         tags['highway'] = 'primary'
     if klasse == u'Lokalvej-Sekundær':
@@ -45,7 +45,6 @@ def filterTags(attrs):
         tags['highway'] = 'cycleway'
     if klasse == u'Cykelbane langs vej':
         tags['highway'] = 'cycleway'
-#    if attrs['ensrettet'] == u'1':
-#        tags['oneway'] = 'yes'
-
+    if attrs['ensrettet'] and attrs['ensrettet'] != u'0':
+        tags['oneway'] = 'yes'
     return tags
