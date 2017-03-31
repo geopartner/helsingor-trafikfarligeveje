@@ -22,13 +22,7 @@
         <div class="form-group">
             <label for="adresse-autocomplete">Indtast din adresse</label>
             <input type="text" class="form-control" id="adresse-autocomplete" placeholder="vejnavn, husnr, postnr">
-        </div>
-        <div class="form-group">
-            <label for="skole">Vælg skole</label>
-            <select class="form-control" id="skoler">
-                <option value="-1">-- vælg --</option>
-            </select>
-        </div>        
+        </div>              
         <div class="form-group">
             <label for="klasse">Klassetrin</label>
             <select class="form-control" id="klasse">
@@ -38,6 +32,12 @@
                 <option value="10">10 klasse</option>
             </select>
         </div>
+        <div class="form-group">
+            <label for="skole">Vælg skole</label>
+            <select class="form-control" id="skoler">
+                <option value="-1">-- vælg --</option>
+            </select>
+        </div>  
         <div class="form-group">
             <label for="transport">Transport</label>
             <select class="form-control" id="transport">
@@ -71,9 +71,8 @@
             <small>Du kan få vist skoledistrikterne under lagkontrollen i øverste højre hjørne.</small>
         </div>
         <div id="farlig" class="alert alert-success" role="alert" style="display: none;">
-            <strong>Du er berettiget til at søge tilskud, da du bor ud til en trafikfarlig vej!</strong>
+            <strong>Du er berettiget til at søge tilskud, da der er trafikfarlige veje på din skolevej!</strong>
         </div> 
-        
         <a id="tilskudbtn" class="btn btn-success btn-lg center-block" style="display: none" target="_blank">Gem ruteberegning som PDF – og Søg om tilskud</a>
     </div>
     <div id="map"></div>

@@ -33,7 +33,7 @@ osm:
 	$(OGR2OSM)ogr2osm.py -f -t translation_0-3.py -o Skolevej_0-3.osm Vejmidte.geojson
 	$(OGR2OSM)ogr2osm.py -f -t translation_4-6.py -o Skolevej_4-6.osm Vejmidte.geojson
 	$(OGR2OSM)ogr2osm.py -f -t translation_7-10.py -o Skolevej_7-10.osm Vejmidte.geojson
-#	$(OGR2OSM)ogr2osm.py -f -t translation_vej.py -o Vejmidte.osm Vejmidte.geojson
+	$(OGR2OSM)ogr2osm.py -f -t translation_vej.py -o Vejmidte.osm Vejmidte.geojson
     
 copy: osm
 	mkdir -p bicycle
@@ -48,39 +48,39 @@ copy: osm
 	cp Skolevej_7-10.osm bicycle/.
 	cp Skolevej_7-10.osm foot/.
 	cp Skolevej_7-10.osm car/.
-#	cp Vejmidte.osm bicycle/.
-#	cp Vejmidte.osm foot/.
-#	cp Vejmidte.osm car/.
+	cp Vejmidte.osm bicycle/.
+	cp Vejmidte.osm foot/.
+	cp Vejmidte.osm car/.
     
 osrm: copy $(OSRM_EXTRACT)
 	@echo "Running osrm-extract..."
 	$(OSRM_EXTRACT) bicycle/Skolevej_0-3.osm -p bicycle.lua
 	$(OSRM_EXTRACT) bicycle/Skolevej_4-6.osm -p bicycle.lua    
 	$(OSRM_EXTRACT) bicycle/Skolevej_7-10.osm -p bicycle.lua
-#	$(OSRM_EXTRACT) bicycle/Vejmidte.osm -p bicycle.lua
+	$(OSRM_EXTRACT) bicycle/Vejmidte.osm -p bicycle.lua
 	$(OSRM_EXTRACT) car/Skolevej_0-3.osm -p car.lua
 	$(OSRM_EXTRACT) car/Skolevej_4-6.osm -p car.lua    
 	$(OSRM_EXTRACT) car/Skolevej_7-10.osm -p car.lua
-#	$(OSRM_EXTRACT) car/Vejmidte.osm -p car.lua
+	$(OSRM_EXTRACT) car/Vejmidte.osm -p car.lua
 	$(OSRM_EXTRACT) foot/Skolevej_0-3.osm -p foot.lua
 	$(OSRM_EXTRACT) foot/Skolevej_4-6.osm -p foot.lua    
 	$(OSRM_EXTRACT) foot/Skolevej_7-10.osm -p foot.lua
-#	$(OSRM_EXTRACT) foot/Vejmidte.osm -p foot.lua
+	$(OSRM_EXTRACT) foot/Vejmidte.osm -p foot.lua
     
 hsgr: osrm $(OSRM_PREPARE)
 	@echo "Running osrm-prepare..."
 	$(OSRM_PREPARE) bicycle/Skolevej_0-3.osrm -p bicycle.lua
 	$(OSRM_PREPARE) bicycle/Skolevej_4-6.osrm -p bicycle.lua
 	$(OSRM_PREPARE) bicycle/Skolevej_7-10.osrm -p bicycle.lua
-#	$(OSRM_PREPARE) bicycle/Vejmidte.osrm -p bicycle.lua
+	$(OSRM_PREPARE) bicycle/Vejmidte.osrm -p bicycle.lua
 	$(OSRM_PREPARE) car/Skolevej_0-3.osrm -p car.lua
 	$(OSRM_PREPARE) car/Skolevej_4-6.osrm -p car.lua
 	$(OSRM_PREPARE) car/Skolevej_7-10.osrm -p car.lua
-#	$(OSRM_PREPARE) car/Vejmidte.osrm -p car.lua
+	$(OSRM_PREPARE) car/Vejmidte.osrm -p car.lua
 	$(OSRM_PREPARE) foot/Skolevej_0-3.osrm -p foot.lua
 	$(OSRM_PREPARE) foot/Skolevej_4-6.osrm -p foot.lua
 	$(OSRM_PREPARE) foot/Skolevej_7-10.osrm -p foot.lua
-#	$(OSRM_PREPARE) foot/Vejmidte.osrm -p foot.lua
+	$(OSRM_PREPARE) foot/Vejmidte.osrm -p foot.lua
 	
 	
 test: 
