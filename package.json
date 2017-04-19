@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/runetvilum/helsingor-trafikfarligeveje.git"
+    "url": "git+https://github.com/geopartner/helsingor-trafikfarligeveje.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/runetvilum/helsingor-trafikfarligeveje/issues"
+    "url": "https://github.com/geopartner/helsingor-trafikfarligeveje/issues"
   },
-  "homepage": "https://github.com/runetvilum/helsingor-trafikfarligeveje#readme",
+  "homepage": "https://github.com/geopartner/helsingor-trafikfarligeveje#readme",
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
