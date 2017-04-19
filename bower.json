@@ -6,7 +6,7 @@
     "Rune Tvilum <rune@addin.dk>"
   ],
   "license": "ISC",
-  "homepage": "https://github.com/runetvilum/helsingor-trafikfarligeveje",
+  "homepage": "https://github.com/geopartner/helsingor-trafikfarligeveje",
   "moduleType": [],
   "private": true,
   "ignore": [
@@ -21,7 +21,7 @@
     "bootstrap": "~3.3.6",
     "leaflet": "~0.7.7",
     "Proj4Leaflet": "proj4leaflet#~0.7.2",
-    "Leaflet.MakiMarkers": "~1.0.1",
+    "Leaflet.MakiMarkers": "geopartner/Leaflet.MakiMarkers#master",
     "turf": "^2.0.2"
   }
 }

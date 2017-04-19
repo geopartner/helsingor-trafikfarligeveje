@@ -1,7 +1,7 @@
 #http://www.gnu.org/prep/standards/html_node/Standard-Targets.html#Standard-Targets
 TOOL_ROOT?=$(shell pwd)/node_modules/osrm/lib/binding
 OSRM_DATASTORE:=$(TOOL_ROOT)/osrm-datastore
-OSRM_RELEASE:=https://raw.githubusercontent.com/Project-OSRM/osrm-backend/master
+OSRM_RELEASE:=https://raw.githubusercontent.com/Project-OSRM/osrm-backend/c27fc4e4d80ddc24c7cb0d22237a49ce88c814e4
 CAR_PROFILE_URL:=$(OSRM_RELEASE)/profiles/car.lua
 bicycle_PROFILE_URL:=$(OSRM_RELEASE)/profiles/bicycle.lua
 FOOT_PROFILE_URL:=$(OSRM_RELEASE)/profiles/foot.lua
