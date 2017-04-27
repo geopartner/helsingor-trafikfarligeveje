@@ -175,31 +175,53 @@ function showRoute(options) {
 function route(options) {
     options = options || {};
     options.farlig = false;
-    var id;
+    var id_start, id_stop;
     $('#farlig').hide();
     $('#egetdistrikt').hide();
     $('#tilskudyes').hide();
     $('#tilskudno').hide();
     $('#tilskudbtn').hide();
     if (selectedSkole && selectedAdresse) {
-        var data = {};
+        var data1 = {
+            coordinates: [
+                [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng],
+                [selectedSkole._latlng.lat, selectedSkole._latlng.lng]
+            ]
+        };
+        var data2 = {
+            coordinates: [
+                [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
+                [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
+            ]
+        };
         options.klasse = $('#klasse').val();
         var transport = $('#transport').val();
-        data.coordinates = [
-            [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng],
-            [selectedSkole._latlng.lat, selectedSkole._latlng.lng]
-        ];
-
         $.ajax('route/' + transport + '/all', {
-            data: JSON.stringify(data),
+            data: JSON.stringify(data1),
             contentType: 'application/json',
             type: 'POST'
         }).done(function (all1) {
-            if (all1.route_instructions.length > 0) {
-                var route = all1.route_instructions[0];
+            var route = all1.route_instructions[0];
+            var farlig = route[1].split('-');
+            if (farlig.length === 3) {
+                id_start = farlig[0];
+                if (farlig[1] === 'T') {
+                    if (options.klasse === '0-3' ||
+                        (options.klasse === '4-6' && (farlig[2] === '6' || farlig[2] === '60' || farlig[2] === '10')) ||
+                        (options.klasse === '7-10' && farlig[2] === '10')) {
+                        options.farlig = true;
+                    }
+                }
+            }
+            $.ajax('route/' + transport + '/all', {
+                data: JSON.stringify(data2),
+                contentType: 'application/json',
+                type: 'POST'
+            }).done(function (all2) {
+                var route = all2.route_instructions[0];
                 var farlig = route[1].split('-');
                 if (farlig.length === 3) {
-                    id = farlig[0];
+                    id_stop = farlig[0];
                     if (farlig[1] === 'T') {
                         if (options.klasse === '0-3' ||
                             (options.klasse === '4-6' && (farlig[2] === '6' || farlig[2] === '60' || farlig[2] === '10')) ||
@@ -208,32 +230,14 @@ function route(options) {
                         }
                     }
                 }
-            }
-            if (options.farlig) {
-                data.coordinates = [
-                    [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
-                    [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
-                ];
-                if (options.retning) {
-                    if (options.retning === '1') {
-                        $.ajax('route/' + transport + '/all', {
-                            data: JSON.stringify(data),
-                            contentType: 'application/json',
-                            type: 'POST'
-                        }).done(function (all2) {
+                if (options.farlig) {
+                    if (options.retning) {
+                        if (options.retning === '1') {
                             options.data = all2;
-                            showRoute(options);
-                        });
+                        } else {
+                            options.data = all1;
+                        }
                     } else {
-                        options.data = all1;
-                        showRoute(options);
-                    }
-                } else {
-                    $.ajax('route/' + transport + '/all', {
-                        data: JSON.stringify(data),
-                        contentType: 'application/json',
-                        type: 'POST'
-                    }).done(function (all2) {
                         if (all1.route_summary.total_distance > all2.route_summary.total_distance) {
                             $('#retning').val("0");
                             options.data = all1;
@@ -241,97 +245,69 @@ function route(options) {
                             $('#retning').val("1");
                             options.data = all2;
                         }
-                        showRoute(options);
-                    });
-                }
-            } else {
-                $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    type: 'POST'
-                }).done(function (res1) {
-                    options.farlig = false;
-                    if (res1.route_instructions.length > 0) {
+                    }
+                    showRoute(options);
+                } else {
+                    $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
+                        data: JSON.stringify(data1),
+                        contentType: 'application/json',
+                        type: 'POST'
+                    }).done(function (res1) {
                         var route = res1.route_instructions[0];
                         var farlig = route[1].split('-');
-                        if (farlig.length === 3 && id === farlig[0]) {
+                        if (farlig.length === 3 && id_start === farlig[0]) {
                         } else {
                             options.farlig = true;
                         }
-                    }
-                    if (options.farlig) {
-                        data.coordinates = [
-                            [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
-                            [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
-                        ];
-                        if (options.retning) {
-                            if (options.retning === '1') {
-                                $.ajax('route/' + transport + '/all', {
-                                    data: JSON.stringify(data),
-                                    contentType: 'application/json',
-                                    type: 'POST'
-                                }).done(function (all2) {
-                                    options.data = all2;
-                                    showRoute(options);
-                                });
+                        $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
+                            data: JSON.stringify(data2),
+                            contentType: 'application/json',
+                            type: 'POST'
+                        }).done(function (res2) {
+                            var route = res2.route_instructions[0];
+                            var farlig = route[1].split('-');
+                            if (farlig.length === 3 && id_stop === farlig[0]) {
                             } else {
-                                options.data = all1;
-                                showRoute(options);
+                                options.farlig = true;
                             }
-                        } else {
-                            $.ajax('route/' + transport + '/all', {
-                                data: JSON.stringify(data),
-                                contentType: 'application/json',
-                                type: 'POST'
-                            }).done(function (all2) {
-                                if (all1.route_summary.total_distance > all2.route_summary.total_distance) {
-                                    $('#retning').val("0");
-                                    options.data = all1;
+                            if (options.farlig) {
+                                if (options.retning) {
+                                    if (options.retning === '1') {
+                                        options.data = all2;
+                                    } else {
+                                        options.data = all1;
+                                    }
                                 } else {
-                                    $('#retning').val("1");
-                                    options.data = all2;
+                                    if (all1.route_summary.total_distance > all2.route_summary.total_distance) {
+                                        $('#retning').val("0");
+                                        options.data = all1;
+                                    } else {
+                                        $('#retning').val("1");
+                                        options.data = all2;
+                                    }
                                 }
-                                showRoute(options);
-                            });
-                        }
-                    } else {
-                        data.coordinates = [
-                            [selectedSkole._latlng.lat, selectedSkole._latlng.lng],
-                            [selectedAdresse._latlng.lat, selectedAdresse._latlng.lng]
-                        ];
-                        if (options.retning) {
-                            if (options.retning === '1') {
-                                $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
-                                    data: JSON.stringify(data),
-                                    contentType: 'application/json',
-                                    type: 'POST'
-                                }).done(function (res2) {
-                                    options.data = res2;
-                                    showRoute(options);
-                                });
                             } else {
-                                options.data = res1;
-                                showRoute(options);
-                            }
-                        } else {
-                            $.ajax('route/' + transport + '/' + klasseIndex[options.klasse].route + '/', {
-                                data: JSON.stringify(data),
-                                contentType: 'application/json',
-                                type: 'POST'
-                            }).done(function (res2) {
-                                if (res1.route_summary.total_distance > res2.route_summary.total_distance) {
-                                    $('#retning').val("0");
-                                    options.data = res1;
+                                if (options.retning) {
+                                    if (options.retning === '1') {
+                                        options.data = res2;
+                                    } else {
+                                        options.data = res1;
+                                    }
                                 } else {
-                                    $('#retning').val("1");
-                                    options.data = res2;
+                                    if (res1.route_summary.total_distance > res2.route_summary.total_distance) {
+                                        $('#retning').val("0");
+                                        options.data = res1;
+                                    } else {
+                                        $('#retning').val("1");
+                                        options.data = res2;
+                                    }
                                 }
-                                showRoute(options);
-                            });
-                        }
-                    }
-                });
-            }
+                            }
+                            showRoute(options);
+                        });
+                    });
+                }
+            });
         });
     }
 }

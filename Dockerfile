@@ -16,6 +16,7 @@ COPY . /usr/src/app
 RUN bower install --allow-root
 RUN git clone --recursive https://github.com/pnorman/ogr2osm ../ogr2osm
 RUN make lua
+RUN sed -i 's/local safety_penalty            = 1.0/local safety_penalty            = 0.5/g' bicycle.lua
 RUN make hsgr
 
 

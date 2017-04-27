@@ -101,7 +101,7 @@ local turn_penalty              = 60
 local turn_bias                 = 1.4
 -- reduce the driving speed by 30% for unsafe roads
 -- local safety_penalty            = 0.7
-local safety_penalty            = 0.9
+local safety_penalty            = 0.5
 local use_public_transport      = true
 local fallback_names            = true
 
