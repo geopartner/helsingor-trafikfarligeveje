@@ -34,3 +34,19 @@ http://localhost:5000
 git clone <github dir>
 service configuration: start node.js service for this specific task
 running on port 5000 - use proxy service for redirecting incoming port 80 http calls
+
+# Docker
+Installer Docker fra [https://store.docker.com/search?type=edition&offering=community]
+
+    docker build -t geopartner/helsingor-trafikfarligeveje .
+    docker run -p 5000:5000 -d geopartner/helsingor-trafikfarligeveje
+
+Gå til hjemmeside [http://localhost:5000]
+
+List docker id
+
+    docker ps
+
+Stop docker
+
+    docker stop <id>
